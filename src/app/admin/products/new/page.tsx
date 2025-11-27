@@ -284,6 +284,14 @@ export default function NewProductPage() {
               <Label htmlFor="sku">SKU</Label>
               <Input id="sku" placeholder="Enter SKU" />
             </div>
+            <div className="grid gap-2">
+              <Label htmlFor="reviewStar">Review Star Point</Label>
+              <Input id="reviewStar" type="number" min="0" max="5" step="0.1" placeholder="e.g. 4.5" />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="rewardPoints">Reward Points</Label>
+              <Input id="rewardPoints" type="number" min="0" placeholder="e.g. 100" />
+            </div>
           </div>
 
           {/* Region Management (Manual Add/Edit) */}

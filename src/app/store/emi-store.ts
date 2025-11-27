@@ -7,6 +7,7 @@ export interface EMIPlan {
   name: string
   interestRate: number
   enabled: boolean
+  bankId?: string | null
 }
 
 export interface EMIConfig {
