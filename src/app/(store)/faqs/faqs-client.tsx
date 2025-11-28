@@ -249,7 +249,7 @@ export function FAQsClient() {
       <section className="rounded-lg bg-muted p-8 text-center">
         <h2 className="text-2xl font-bold tracking-tight">Still need help?</h2>
         <p className="mt-2 text-muted-foreground">
-          Can't find the answer you're looking for? Please{" "}
+          Can&apos;t find the answer you&apos;re looking for? Please{" "}
           <a href="/contact-us" className="text-primary hover:underline">
             contact our support team
           </a>

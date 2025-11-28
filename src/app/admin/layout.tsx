@@ -31,6 +31,8 @@ const sidebarLinks = [
   {href: '/admin/categories', label: 'Categories', icon: FolderTree},
   {href: '/admin/emi', label: 'EMI Plans', icon: CreditCard},
   {href: '/admin/products', label: 'Products', icon: Package},
+  {href: '/admin/product-faqs', label: 'Product Faqs', icon: MessageSquare},
+  {href: '/admin/homeshow-category', label: 'HomeShow Category', icon: FolderTree},
   {href: '/admin/orders', label: 'Orders', icon: ShoppingCart, badge: '12'},
   {href: '/admin/customers', label: 'Customers', icon: Users},
   {
