@@ -34,6 +34,7 @@ const sidebarLinks = [
   {href: '/admin/product-faqs', label: 'Product Faqs', icon: MessageSquare},
   {href: '/admin/homeshow-category', label: 'HomeShow Category', icon: FolderTree},
   {href: '/admin/product-care-plan', label: 'Product Care Plan', icon: Settings},
+  {href: '/admin/privacy-policy', label: 'Privacy Policy', icon: Settings},
   {href: '/admin/orders', label: 'Orders', icon: ShoppingCart, badge: '12'},
   {href: '/admin/customers', label: 'Customers', icon: Users},
   {
