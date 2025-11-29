@@ -1,9 +1,12 @@
+"use client"
+
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Button } from "../components/ui/button"
 import { Badge } from "../components/ui/badge"
 import { DollarSign, ShoppingCart, Users, Package, TrendingUp, TrendingDown, ArrowUpRight } from "lucide-react"
 import { formatPrice } from "../lib/utils/format"
 import Link from "next/link"
+import { withProtectedRoute } from "../lib/auth/protected-route"
 
 const stats = [
   {
@@ -67,7 +70,7 @@ function getStatusColor(status: string) {
   }
 }
 
-export default function AdminDashboard() {
+function AdminDashboard() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
