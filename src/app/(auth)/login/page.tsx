@@ -25,6 +25,7 @@ import { Checkbox } from "../../components/ui/checkbox";
 import { Separator } from "../../components/ui/separator";
 import { User } from "@/app/types";
 import { useOAuth } from "@/app/lib/oauth";
+import { useSearchParams } from "next/navigation";
 
 const demoAccounts = [
   {
@@ -46,12 +47,14 @@ const demoAccounts = [
 export default function LoginPage() {
   const authService = new AuthService();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { initiateOAuth, isOAuthLoading } = useOAuth();
   const { login } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const fromParam = searchParams.get("from");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
