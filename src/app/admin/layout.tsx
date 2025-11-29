@@ -93,3 +93,9 @@ function AdminLayout({children}: {children: React.ReactNode}) {
     </div>
   );
 }
+
+export default withProtectedRoute(AdminLayout, {
+  requiredRoles: ['admin'],
+  fallbackTo: '/login',
+  showLoader: true,
+})
