@@ -163,7 +163,7 @@ export default async function Page({ params }: CategoryPageProps) {
 
       {/* FAQ Section */}
       <div className="mt-16">
-        <CategoryFAQ categoryName={category?.name ?? slug} />
+        <CategoryFAQ categoryName={category?.name ?? slug} categorySlug={slug} />
       </div>
     </div>
   );
