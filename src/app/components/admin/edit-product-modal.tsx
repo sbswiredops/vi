@@ -347,14 +347,15 @@ export function EditProductModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-5xl max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle>Edit Product</DialogTitle>
           <DialogDescription>Update product information and settings</DialogDescription>
         </DialogHeader>
 
+        <div className="flex-1 overflow-y-auto">
         <Tabs defaultValue="basic" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-6 gap-0">
             <TabsTrigger value="basic">Basic</TabsTrigger>
             <TabsTrigger value="pricing">Pricing</TabsTrigger>
             <TabsTrigger value="inventory">Inventory</TabsTrigger>
@@ -364,7 +365,7 @@ export function EditProductModal({
           </TabsList>
 
           {/* Basic Tab */}
-          <TabsContent value="basic" className="space-y-4">
+          <TabsContent value="basic" className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="edit-name">Product Name</Label>
               <Input
@@ -383,7 +384,7 @@ export function EditProductModal({
                 placeholder="product-url-slug"
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="edit-category">Category</Label>
                 <Select value={selectedCategory} onValueChange={setSelectedCategory}>
@@ -415,7 +416,7 @@ export function EditProductModal({
                 </Select>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="edit-code">Product Code</Label>
                 <Input
@@ -435,7 +436,7 @@ export function EditProductModal({
                 />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="edit-rating">Review Star Point</Label>
                 <Input
@@ -1012,6 +1013,7 @@ export function EditProductModal({
             </div>
           </TabsContent>
         </Tabs>
+        </div>
 
         <DialogFooter className="flex items-center justify-between">
           <div className="flex items-center gap-2">

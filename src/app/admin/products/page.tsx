@@ -128,28 +128,14 @@ function AdminProductsPage() {
     fetchProducts();
   }, [selectedCategory]);
 
-  const handleViewClick = async (product: UIProduct) => {
-    try {
-      const fullProduct = await productsService.getById(product.id);
-      setSelectedProduct(fullProduct);
-      setViewOpen(true);
-    } catch (err: any) {
-      console.error("Failed to fetch full product details:", err);
-      setSelectedProduct(product);
-      setViewOpen(true);
-    }
+  const handleViewClick = (product: UIProduct) => {
+    setSelectedProduct(product);
+    setViewOpen(true);
   };
 
-  const handleEditClick = async (product: UIProduct) => {
-    try {
-      const fullProduct = await productsService.getById(product.id);
-      setSelectedProduct(fullProduct);
-      setEditOpen(true);
-    } catch (err: any) {
-      console.error("Failed to fetch full product details:", err);
-      setSelectedProduct(product);
-      setEditOpen(true);
-    }
+  const handleEditClick = (product: UIProduct) => {
+    setSelectedProduct(product);
+    setEditOpen(true);
   };
 
   const handleDeleteClick = (product: UIProduct) => {

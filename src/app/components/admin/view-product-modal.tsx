@@ -12,7 +12,7 @@ import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { formatPrice } from "../../../lib/utils/format";
+import { formatPrice } from "../../lib/utils/format";
 
 interface ViewProductModalProps {
   open: boolean;
@@ -45,7 +45,7 @@ export function ViewProductModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle>{product.name}</DialogTitle>
           <DialogDescription>
@@ -53,6 +53,7 @@ export function ViewProductModal({
           </DialogDescription>
         </DialogHeader>
 
+        <div className="flex-1 overflow-y-auto">
         <Tabs defaultValue="overview" className="w-full">
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -68,13 +69,12 @@ export function ViewProductModal({
               {/* Main Image */}
               <div className="space-y-2">
                 <h3 className="font-semibold">Product Image</h3>
-                <div className="rounded-lg bg-muted p-4 flex items-center justify-center min-h-80">
+                <div className="relative rounded-lg bg-muted p-4 flex items-center justify-center min-h-80">
                   <Image
                     src={mainImage}
                     alt={product.name}
-                    width={300}
-                    height={300}
-                    className="max-w-sm max-h-80 object-contain"
+                    fill
+                    className="object-contain p-4"
                   />
                 </div>
               </div>
@@ -570,6 +570,7 @@ export function ViewProductModal({
             </Card>
           </TabsContent>
         </Tabs>
+        </div>
 
         <div className="flex gap-2 justify-end">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
