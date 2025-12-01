@@ -1,29 +1,29 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-"use client"
+"use client";
 
-import React, { useEffect, useState, ComponentType } from "react"
-import { useRouter } from "next/navigation"
-import { useAuthStore } from "@/app/store/auth-store"
-export type UserRole = "user" | "admin" | "management"
+import React, { useEffect, useState, ComponentType } from "react";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/app/store/auth-store";
+export type UserRole = "user" | "admin" | "management";
 
 export interface User {
-  id: string
-  name: string
-  email: string
-  role: UserRole
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
 }
 
 interface ProtectedRouteOptions {
-  requiredRoles?: UserRole[]
-  fallbackTo?: string
-  showLoader?: boolean
+  requiredRoles?: UserRole[];
+  fallbackTo?: string;
+  showLoader?: boolean;
 }
 
 interface ProtectedRouteProps {
-  isAuthenticated: boolean
-  isLoading: boolean
-  user: User | null
-  hasRequiredRole: boolean
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  user: User | null;
+  hasRequiredRole: boolean;
 }
 
 /**
@@ -33,49 +33,75 @@ interface ProtectedRouteProps {
  */
 export function withProtectedRoute<P extends object>(
   Component: ComponentType<P>,
-  options: ProtectedRouteOptions = {},
+  options: ProtectedRouteOptions = {}
 ): ComponentType<P> {
   return function ProtectedRouteComponent(props: P) {
-    const router = useRouter()
-    const { user, token, isAuthenticated } = useAuthStore()
-    const [isLoading, setIsLoading] = useState(true)
-    const [isAuthorized, setIsAuthorized] = useState(false)
-    const [error, setError] = useState<string | null>(null)
+    const router = useRouter();
+    const { user, token, isAuthenticated } = useAuthStore();
+    // Hydration state for client-side only
+    const [isHydrated, setIsHydrated] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isAuthorized, setIsAuthorized] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const { requiredRoles = [], fallbackTo = "/login", showLoader = true } = options
+    const {
+      requiredRoles = [],
+      fallbackTo = "/login",
+      showLoader = true,
+    } = options;
+
+    // Set hydrated true after mount (client only)
+    useEffect(() => {
+      setIsHydrated(true);
+    }, []);
 
     useEffect(() => {
-      setIsLoading(true)
-      setError(null)
+      if (!isHydrated) return; // Wait for hydration
+      setIsLoading(true);
+      setError(null);
 
       // Check if user is authenticated
       if (!isAuthenticated || !token) {
-        const pathname = typeof window !== "undefined" ? window.location.pathname : ""
-        router.push(`${fallbackTo}?from=${pathname}`)
-        return
+        const pathname =
+          typeof window !== "undefined" ? window.location.pathname : "";
+        router.push(`${fallbackTo}?from=${pathname}`);
+        return;
       }
 
       // Check if user has required role
       if (requiredRoles.length > 0) {
         if (!user) {
-          setError("User data not found")
-          setIsLoading(false)
-          return
+          setError("User data not found");
+          setIsLoading(false);
+          return;
         }
 
-        const hasRole = requiredRoles.includes(user.role)
+        const hasRole = requiredRoles.includes(user.role);
 
         if (!hasRole) {
           // User is authenticated but doesn't have required role
-          router.push("/403")
-          return
+          router.push("/403");
+          return;
         }
       }
 
       // User is authorized
-      setIsAuthorized(true)
-      setIsLoading(false)
-    }, [isAuthenticated, token, user, router, fallbackTo, requiredRoles])
+      setIsAuthorized(true);
+      setIsLoading(false);
+    }, [
+      isAuthenticated,
+      token,
+      user,
+      router,
+      fallbackTo,
+      requiredRoles,
+      isHydrated,
+    ]);
+
+    if (!isHydrated) {
+      // Optionally show a loader or nothing until hydrated
+      return null;
+    }
 
     if (isLoading) {
       if (showLoader) {
@@ -86,9 +112,9 @@ export function withProtectedRoute<P extends object>(
               <p className="mt-4 text-muted-foreground">Loading...</p>
             </div>
           </div>
-        )
+        );
       }
-      return null
+      return null;
     }
 
     if (error) {
@@ -98,70 +124,70 @@ export function withProtectedRoute<P extends object>(
             <p className="text-red-600">Error: {error}</p>
           </div>
         </div>
-      )
+      );
     }
 
     if (!isAuthorized) {
-      return null
+      return null;
     }
 
-    return <Component {...props} />
-  }
+    return <Component {...props} />;
+  };
 }
 
 /**
  * Hook to check if user is authenticated and has required role
  */
 export function useProtectedRoute(requiredRoles?: UserRole[]) {
-  const router = useRouter()
-  const { user, token, isAuthenticated } = useAuthStore()
-  const [isLoading, setIsLoading] = useState(true)
-  const [isAuthorized, setIsAuthorized] = useState(false)
+  const router = useRouter();
+  const { user, token, isAuthenticated } = useAuthStore();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
 
       if (!isAuthenticated || !token) {
-        setIsAuthorized(false)
-        setIsLoading(false)
-        return
+        setIsAuthorized(false);
+        setIsLoading(false);
+        return;
       }
 
-      let authorized = true
+      let authorized = true;
 
       if (requiredRoles && requiredRoles.length > 0 && user) {
-        authorized = requiredRoles.includes(user.role)
+        authorized = requiredRoles.includes(user.role);
       }
 
-      setIsAuthorized(authorized)
-      setIsLoading(false)
-    }
+      setIsAuthorized(authorized);
+      setIsLoading(false);
+    };
 
-    checkAuth()
-  }, [isAuthenticated, token, user, requiredRoles])
+    checkAuth();
+  }, [isAuthenticated, token, user, requiredRoles]);
 
   const requireAuth = (fallbackTo: string = "/login") => {
     if (!isLoading && !isAuthorized) {
-      router.push(fallbackTo)
+      router.push(fallbackTo);
     }
-  }
+  };
 
   return {
     isLoading,
     isAuthorized,
     user,
     requireAuth,
-  }
+  };
 }
 
 /**
  * Component to conditionally render content based on authentication and role
  */
 interface ProtectedContentProps {
-  children: React.ReactNode
-  fallback?: React.ReactNode
-  requiredRoles?: UserRole[]
+  children: React.ReactNode;
+  fallback?: React.ReactNode;
+  requiredRoles?: UserRole[];
 }
 
 export function ProtectedContent({
@@ -169,40 +195,40 @@ export function ProtectedContent({
   fallback = null,
   requiredRoles = [],
 }: ProtectedContentProps) {
-  const { user, token, isAuthenticated } = useAuthStore()
+  const { user, token, isAuthenticated } = useAuthStore();
 
   if (!isAuthenticated || !token) {
-    return fallback
+    return fallback;
   }
 
   if (requiredRoles.length > 0 && user) {
-    const hasRole = requiredRoles.includes(user.role)
+    const hasRole = requiredRoles.includes(user.role);
     if (!hasRole) {
-      return fallback
+      return fallback;
     }
   }
 
-  return <>{children}</>
+  return <>{children}</>;
 }
 
 /**
  * Redirect component for post-login redirects
  */
 interface AuthRedirectProps {
-  from?: string
-  defaultTo?: string
+  from?: string;
+  defaultTo?: string;
 }
 
 export function AuthRedirect({ from, defaultTo = "/" }: AuthRedirectProps) {
-  const router = useRouter()
-  const { isAuthenticated, token } = useAuthStore()
+  const router = useRouter();
+  const { isAuthenticated, token } = useAuthStore();
 
   useEffect(() => {
     if (isAuthenticated && token) {
-      const redirectTo = from || defaultTo
-      router.replace(redirectTo)
+      const redirectTo = from || defaultTo;
+      router.replace(redirectTo);
     }
-  }, [isAuthenticated, token, from, defaultTo, router])
+  }, [isAuthenticated, token, from, defaultTo, router]);
 
-  return null
+  return null;
 }

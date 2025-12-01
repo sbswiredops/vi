@@ -17,15 +17,12 @@ export const useAuthStore = create<AuthStore>()(
       user: null,
       token: null,
       isAuthenticated: false,
-
       login: (user, token) => {
         set({ user, token, isAuthenticated: true })
       },
-
       logout: () => {
         set({ user: null, token: null, isAuthenticated: false })
       },
-
       updateUser: (updates) => {
         const currentUser = get().user
         if (currentUser) {

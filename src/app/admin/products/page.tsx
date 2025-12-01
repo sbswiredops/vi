@@ -1,118 +1,186 @@
-'use client'
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { Plus, Search, Filter, MoreVertical, Edit, Trash2, Eye, Copy } from "lucide-react"
-import { withProtectedRoute } from "../../lib/auth/protected-route"
-import { Card, CardContent } from "../../components/ui/card"
-import { Button } from "../../components/ui/button"
-import { Input } from "../../components/ui/input"
-import { Badge } from "../../components/ui/badge"
-import { Checkbox } from "../../components/ui/checkbox"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../components/ui/dropdown-menu"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../components/ui/dialog"
-import { Label } from "../../components/ui/label"
-import { Textarea } from "../../components/ui/textarea"
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../../components/ui/alert-dialog"
-import { formatPrice } from "../../lib/utils/format"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import {
+  Plus,
+  Search,
+  Filter,
+  MoreVertical,
+  Edit,
+  Trash2,
+  Eye,
+  Copy,
+} from "lucide-react";
+import { withProtectedRoute } from "../../lib/auth/protected-route";
+import { Card, CardContent } from "../../components/ui/card";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Badge } from "../../components/ui/badge";
+import { Checkbox } from "../../components/ui/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../../components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../../components/ui/dialog";
+import { Label } from "../../components/ui/label";
+import { Textarea } from "../../components/ui/textarea";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../../components/ui/alert-dialog";
+import { formatPrice } from "../../lib/utils/format";
 
-import { useEffect } from "react"
-import productsService from "../../lib/api/services/products"
-import { Product } from "../../lib/api/types"
-
+import productsService from "../../lib/api/services/products";
+import categoriesService from "../../lib/api/services/categories";
 
 function AdminProductsPage() {
   // UI Product type for display
   type UIProduct = {
-    id: string
-    name: string
-    image: string
-    sku: string
-    category: string
-    price: number
-    stock: number
-    status: string
-    description?: string
-  }
-  const [products, setProducts] = useState<UIProduct[]>([])
-  const [selectedProduct, setSelectedProduct] = useState<UIProduct | null>(null)
-  const [viewOpen, setViewOpen] = useState(false)
-  const [editOpen, setEditOpen] = useState(false)
-  const [deleteOpen, setDeleteOpen] = useState(false)
-  const [editFormData, setEditFormData] = useState<UIProduct | null>(null)
-  const [loading, setLoading] = useState<boolean>(true)
+    id: string;
+    name: string;
+    image: string;
+    sku: string;
+    category: string;
+    price: number;
+    stock: number;
+    status: string;
+    description?: string;
+  };
+  const [products, setProducts] = useState<UIProduct[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<UIProduct | null>(
+    null
+  );
+  const [viewOpen, setViewOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [editFormData, setEditFormData] = useState<UIProduct | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>(
+    []
+  );
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
+  // Fetch categories on mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const cats = await categoriesService.getAll();
+        setCategories(cats.map((c) => ({ id: c.id, name: c.name })));
+      } catch {
+        setCategories([]);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  // Fetch products, optionally filtered by category
   useEffect(() => {
     const fetchProducts = async () => {
-      setLoading(true)
+      setLoading(true);
       try {
-        const res = await productsService.getAll()
-        console.log("Fetched products:", res)
-        // Use the correct property from ProductListResponse (commonly 'data' or 'results' or similar)
-        // We'll try 'data' and fallback to []
-        // Adjust this line to use the correct property from your ProductListResponse type
-        const apiProducts = Array.isArray(res?.data) ? res.data : []
+        let res;
+        if (selectedCategory && selectedCategory !== "all") {
+          res = await productsService.getAll({ categoryId: selectedCategory });
+        } else {
+          res = await productsService.getAll();
+        }
+        // ProductListResponse: { data: Product[], ... }
+        const apiProducts = Array.isArray(res) ? res : [];
         const mapped: UIProduct[] = apiProducts.map((p) => ({
           id: p.id,
           name: p.name,
-          image: Array.isArray(p.images) && p.images.length > 0 ? p.images[0] : '/placeholder.svg',
-          sku: p.sku || '',
-          category: typeof p.category === 'object' && p.category !== null ? (p.category.name || p.category.slug || '') : (typeof p.category === 'string' ? p.category : ''),
-          price: typeof p.price === 'number' ? p.price : 0,
-          stock: typeof p.stock === 'number' ? p.stock : 0,
-          status: typeof p.status === 'string' ? p.status : (p.status === true ? 'Active' : p.status === false ? 'Inactive' : 'Unknown'),
-          description: p.description || '',
-        }))
-        setProducts(mapped)
+          image:
+            (Array.isArray(p.images) && p.images.length > 0 && p.images[0]) ||
+            p.thumbnail ||
+            "/placeholder.svg",
+          sku: p.sku || "",
+          category: p.categoryId || "",
+          price: Number(p.price) || Number(p.basePrice) || 0,
+          stock: Number(p.stock) || 0,
+          status:
+            typeof p.status === "string"
+              ? p.status
+              : !p.stock || p.stock === 0
+              ? "Out of Stock"
+              : "Active",
+          description: p.description || "",
+        }));
+        setProducts(mapped);
       } catch {
-        setProducts([])
+        setProducts([]);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-    fetchProducts()
-  }, [])
+    };
+    fetchProducts();
+  }, [selectedCategory]);
 
   const handleViewClick = (product: UIProduct) => {
-    setSelectedProduct(product)
-    setViewOpen(true)
-  }
+    setSelectedProduct(product);
+    setViewOpen(true);
+  };
 
   const handleEditClick = (product: UIProduct) => {
-    setSelectedProduct(product)
-    setEditFormData({ ...product })
-    setEditOpen(true)
-  }
+    setSelectedProduct(product);
+    setEditFormData({ ...product });
+    setEditOpen(true);
+  };
 
   const handleDeleteClick = (product: UIProduct) => {
-    setSelectedProduct(product)
-    setDeleteOpen(true)
-  }
+    setSelectedProduct(product);
+    setDeleteOpen(true);
+  };
 
   const handleSaveEdit = () => {
     if (editFormData) {
-      setProducts(products.map((p) => (p.id === editFormData.id ? editFormData : p)))
-      setEditOpen(false)
-      setEditFormData(null)
+      setProducts(
+        products.map((p) => (p.id === editFormData.id ? editFormData : p))
+      );
+      setEditOpen(false);
+      setEditFormData(null);
     }
-  }
+  };
 
   const handleConfirmDelete = () => {
     if (selectedProduct) {
-      setProducts(products.filter((p) => p.id !== selectedProduct.id))
-      setDeleteOpen(false)
-      setSelectedProduct(null)
+      setProducts(products.filter((p) => p.id !== selectedProduct.id));
+      setDeleteOpen(false);
+      setSelectedProduct(null);
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Products</h1>
-          <p className="text-muted-foreground">Manage your product inventory.</p>
+          <p className="text-muted-foreground">
+            Manage your product inventory.
+          </p>
         </div>
         <Link href="/admin/products/new">
           <Button className="gap-2">
@@ -130,16 +198,20 @@ function AdminProductsPage() {
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input placeholder="Search products..." className="pl-9" />
               </div>
-              <Select defaultValue="all">
+              <Select
+                value={selectedCategory}
+                onValueChange={setSelectedCategory}
+              >
                 <SelectTrigger className="w-40">
                   <SelectValue placeholder="Category" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Categories</SelectItem>
-                  <SelectItem value="smartphones">Smartphones</SelectItem>
-                  <SelectItem value="laptops">Laptops</SelectItem>
-                  <SelectItem value="tablets">Tablets</SelectItem>
-                  <SelectItem value="audio">Audio</SelectItem>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <Select defaultValue="all">
@@ -154,7 +226,11 @@ function AdminProductsPage() {
                 </SelectContent>
               </Select>
             </div>
-            <Button variant="outline" size="sm" className="gap-2 bg-transparent">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 bg-transparent"
+            >
               <Filter className="h-4 w-4" />
               More Filters
             </Button>
@@ -179,11 +255,21 @@ function AdminProductsPage() {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={8} className="py-8 text-center text-muted-foreground">Loading products...</td>
+                    <td
+                      colSpan={8}
+                      className="py-8 text-center text-muted-foreground"
+                    >
+                      Loading products...
+                    </td>
                   </tr>
                 ) : products.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="py-8 text-center text-muted-foreground">No products found.</td>
+                    <td
+                      colSpan={8}
+                      className="py-8 text-center text-muted-foreground"
+                    >
+                      No products found.
+                    </td>
                   </tr>
                 ) : (
                   products.map((product) => (
@@ -205,9 +291,13 @@ function AdminProductsPage() {
                           <span className="font-medium">{product.name}</span>
                         </div>
                       </td>
-                      <td className="py-4 pr-4 text-sm text-muted-foreground">{product.sku}</td>
+                      <td className="py-4 pr-4 text-sm text-muted-foreground">
+                        {product.sku}
+                      </td>
                       <td className="py-4 pr-4 text-sm">{product.category}</td>
-                      <td className="py-4 pr-4 font-medium">{formatPrice(product.price ?? 0)}</td>
+                      <td className="py-4 pr-4 font-medium">
+                        {formatPrice(product.price ?? 0)}
+                      </td>
                       <td className="py-4 pr-4">{product.stock}</td>
                       <td className="py-4 pr-4">
                         <Badge
@@ -216,10 +306,10 @@ function AdminProductsPage() {
                             product.status === "Active"
                               ? "bg-green-500/10 text-green-600"
                               : product.status === "Low Stock"
-                                ? "bg-yellow-500/10 text-yellow-600"
-                                : product.status === "Out of Stock"
-                                  ? "bg-red-500/10 text-red-600"
-                                  : "bg-gray-500/10 text-gray-600"
+                              ? "bg-yellow-500/10 text-yellow-600"
+                              : product.status === "Out of Stock"
+                              ? "bg-red-500/10 text-red-600"
+                              : "bg-gray-500/10 text-gray-600"
                           }
                         >
                           {product.status}
@@ -233,11 +323,15 @@ function AdminProductsPage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleViewClick(product)}>
+                            <DropdownMenuItem
+                              onClick={() => handleViewClick(product)}
+                            >
                               <Eye className="mr-2 h-4 w-4" />
                               View
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleEditClick(product)}>
+                            <DropdownMenuItem
+                              onClick={() => handleEditClick(product)}
+                            >
                               <Edit className="mr-2 h-4 w-4" />
                               Edit
                             </DropdownMenuItem>
@@ -245,7 +339,10 @@ function AdminProductsPage() {
                               <Copy className="mr-2 h-4 w-4" />
                               Duplicate
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="text-destructive" onClick={() => handleDeleteClick(product)}>
+                            <DropdownMenuItem
+                              className="text-destructive"
+                              onClick={() => handleDeleteClick(product)}
+                            >
                               <Trash2 className="mr-2 h-4 w-4" />
                               Delete
                             </DropdownMenuItem>
@@ -260,7 +357,9 @@ function AdminProductsPage() {
           </div>
 
           <div className="mt-6 flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">Showing 1-5 of 456 products</p>
+            <p className="text-sm text-muted-foreground">
+              Showing 1-5 of 456 products
+            </p>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" disabled>
                 Previous
@@ -278,7 +377,9 @@ function AdminProductsPage() {
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>View Product</DialogTitle>
-            <DialogDescription>Product details and information</DialogDescription>
+            <DialogDescription>
+              Product details and information
+            </DialogDescription>
           </DialogHeader>
           {selectedProduct && (
             <div className="space-y-6">
@@ -294,27 +395,49 @@ function AdminProductsPage() {
                 </div>
                 <div className="space-y-4">
                   <div>
-                    <Label className="text-muted-foreground text-xs uppercase">Product Name</Label>
-                    <p className="mt-1 font-medium text-base">{selectedProduct.name}</p>
+                    <Label className="text-muted-foreground text-xs uppercase">
+                      Product Name
+                    </Label>
+                    <p className="mt-1 font-medium text-base">
+                      {selectedProduct.name}
+                    </p>
                   </div>
                   <div>
-                    <Label className="text-muted-foreground text-xs uppercase">SKU</Label>
-                    <p className="mt-1 font-medium text-base">{selectedProduct.sku}</p>
+                    <Label className="text-muted-foreground text-xs uppercase">
+                      SKU
+                    </Label>
+                    <p className="mt-1 font-medium text-base">
+                      {selectedProduct.sku}
+                    </p>
                   </div>
                   <div>
-                    <Label className="text-muted-foreground text-xs uppercase">Category</Label>
-                    <p className="mt-1 font-medium text-base">{selectedProduct.category}</p>
+                    <Label className="text-muted-foreground text-xs uppercase">
+                      Category
+                    </Label>
+                    <p className="mt-1 font-medium text-base">
+                      {selectedProduct.category}
+                    </p>
                   </div>
                   <div>
-                    <Label className="text-muted-foreground text-xs uppercase">Price</Label>
-                    <p className="mt-1 font-medium text-base">{formatPrice(selectedProduct.price ?? 0)}</p>
+                    <Label className="text-muted-foreground text-xs uppercase">
+                      Price
+                    </Label>
+                    <p className="mt-1 font-medium text-base">
+                      {formatPrice(selectedProduct.price ?? 0)}
+                    </p>
                   </div>
                   <div>
-                    <Label className="text-muted-foreground text-xs uppercase">Stock</Label>
-                    <p className="mt-1 font-medium text-base">{selectedProduct.stock}</p>
+                    <Label className="text-muted-foreground text-xs uppercase">
+                      Stock
+                    </Label>
+                    <p className="mt-1 font-medium text-base">
+                      {selectedProduct.stock}
+                    </p>
                   </div>
                   <div>
-                    <Label className="text-muted-foreground text-xs uppercase">Status</Label>
+                    <Label className="text-muted-foreground text-xs uppercase">
+                      Status
+                    </Label>
                     <div className="mt-1">
                       <Badge
                         variant="secondary"
@@ -322,10 +445,10 @@ function AdminProductsPage() {
                           selectedProduct.status === "Active"
                             ? "bg-green-500/10 text-green-600"
                             : selectedProduct.status === "Low Stock"
-                              ? "bg-yellow-500/10 text-yellow-600"
-                              : selectedProduct.status === "Out of Stock"
-                                ? "bg-red-500/10 text-red-600"
-                                : "bg-gray-500/10 text-gray-600"
+                            ? "bg-yellow-500/10 text-yellow-600"
+                            : selectedProduct.status === "Out of Stock"
+                            ? "bg-red-500/10 text-red-600"
+                            : "bg-gray-500/10 text-gray-600"
                         }
                       >
                         {selectedProduct.status}
@@ -336,7 +459,9 @@ function AdminProductsPage() {
               </div>
               {selectedProduct.description && (
                 <div>
-                  <Label className="text-muted-foreground text-xs uppercase">Description</Label>
+                  <Label className="text-muted-foreground text-xs uppercase">
+                    Description
+                  </Label>
                   <p className="mt-2 text-sm">{selectedProduct.description}</p>
                 </div>
               )}
@@ -364,7 +489,9 @@ function AdminProductsPage() {
                 <Input
                   id="edit-name"
                   value={editFormData.name}
-                  onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
+                  onChange={(e) =>
+                    setEditFormData({ ...editFormData, name: e.target.value })
+                  }
                   placeholder="Enter product name"
                 />
               </div>
@@ -374,7 +501,9 @@ function AdminProductsPage() {
                   <Input
                     id="edit-sku"
                     value={editFormData.sku}
-                    onChange={(e) => setEditFormData({ ...editFormData, sku: e.target.value })}
+                    onChange={(e) =>
+                      setEditFormData({ ...editFormData, sku: e.target.value })
+                    }
                     placeholder="Enter SKU"
                   />
                 </div>
@@ -383,7 +512,12 @@ function AdminProductsPage() {
                   <Input
                     id="edit-category"
                     value={editFormData.category}
-                    onChange={(e) => setEditFormData({ ...editFormData, category: e.target.value })}
+                    onChange={(e) =>
+                      setEditFormData({
+                        ...editFormData,
+                        category: e.target.value,
+                      })
+                    }
                     placeholder="Enter category"
                   />
                 </div>
@@ -395,7 +529,12 @@ function AdminProductsPage() {
                     id="edit-price"
                     type="number"
                     value={editFormData.price}
-                    onChange={(e) => setEditFormData({ ...editFormData, price: Number(e.target.value) })}
+                    onChange={(e) =>
+                      setEditFormData({
+                        ...editFormData,
+                        price: Number(e.target.value),
+                      })
+                    }
                     placeholder="Enter price"
                   />
                 </div>
@@ -405,14 +544,24 @@ function AdminProductsPage() {
                     id="edit-stock"
                     type="number"
                     value={editFormData.stock}
-                    onChange={(e) => setEditFormData({ ...editFormData, stock: Number(e.target.value) })}
+                    onChange={(e) =>
+                      setEditFormData({
+                        ...editFormData,
+                        stock: Number(e.target.value),
+                      })
+                    }
                     placeholder="Enter stock quantity"
                   />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="edit-status">Status</Label>
-                <Select value={editFormData.status} onValueChange={(value) => setEditFormData({ ...editFormData, status: value })}>
+                <Select
+                  value={editFormData.status}
+                  onValueChange={(value) =>
+                    setEditFormData({ ...editFormData, status: value })
+                  }
+                >
                   <SelectTrigger id="edit-status">
                     <SelectValue placeholder="Select status" />
                   </SelectTrigger>
@@ -430,7 +579,12 @@ function AdminProductsPage() {
                 <Textarea
                   id="edit-description"
                   value={editFormData.description || ""}
-                  onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
+                  onChange={(e) =>
+                    setEditFormData({
+                      ...editFormData,
+                      description: e.target.value,
+                    })
+                  }
                   placeholder="Enter product description"
                   rows={4}
                 />
@@ -452,23 +606,28 @@ function AdminProductsPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Product</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete <span className="font-semibold">{selectedProduct?.name}</span>? This action cannot be undone.
+              Are you sure you want to delete{" "}
+              <span className="font-semibold">{selectedProduct?.name}</span>?
+              This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogAction
+              onClick={handleConfirmDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </div>
-  )
+  );
 }
 
 export default withProtectedRoute(AdminProductsPage, {
   requiredRoles: ["admin"],
   fallbackTo: "/login",
   showLoader: true,
-})
+});

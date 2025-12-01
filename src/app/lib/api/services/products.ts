@@ -16,8 +16,8 @@ export const productsService = {
    */
   create: async (data: any): Promise<Product> => {
     const formData = new FormData();
-      // Status (publish/unpublish)
-      if (typeof data.status !== 'undefined') formData.append('status', String(data.status));
+    // Status (publish/unpublish)
+    if (typeof data.status !== 'undefined') formData.append('status', String(data.status));
     // Basic fields
     if (data.name) formData.append('name', data.name);
     if (data.slug) formData.append('slug', data.slug);
@@ -29,8 +29,8 @@ export const productsService = {
     if (typeof data.averageRating !== 'undefined') formData.append('averageRating', String(data.averageRating));
     if (typeof data.rewardsPoints !== 'undefined') formData.append('rewardsPoints', String(data.rewardsPoints));
     if (typeof data.price !== 'undefined') formData.append('price', String(data.price));
-    if (typeof data.mrp !== 'undefined') formData.append('mrp', String(data.mrp));
-    if (typeof data.cost !== 'undefined') formData.append('cost', String(data.cost));
+    if (typeof data.discountPrice !== 'undefined') formData.append('discountPrice', String(data.discountPrice));
+    if (typeof data.discountPercent !== 'undefined') formData.append('discountPercent', String(data.discountPercent));
     if (typeof data.emiAvailable !== 'undefined') formData.append('emiAvailable', String(data.emiAvailable));
     if (typeof data.stock !== 'undefined') formData.append('stock', String(data.stock));
     if (typeof data.lowStock !== 'undefined') formData.append('lowStock', String(data.lowStock));
