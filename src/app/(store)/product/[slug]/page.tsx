@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-html-link-for-pages */
 import type { Metadata } from "next"
-import { getProductBySlug, getRelatedProducts } from "../../../lib/mock-data"
+import { productsService } from "../../../lib/api/services/products"
 import { ProductGallery } from "../../../components/product/product-gallery"
 import { ProductInfo } from "../../../components/product/product-info"
 import { ProductTabs } from "../../../components/product/product-tabs"
@@ -8,6 +8,7 @@ import { ProductSection } from "../../../components/home/product-section"
 import Link from "next/link"
 import { Button } from "../../../components/ui/button"
 import { Home, ArrowLeft } from "lucide-react"
+import type { Product } from "../../../types"
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>
