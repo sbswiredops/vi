@@ -133,9 +133,15 @@ function AdminProductsPage() {
     setViewOpen(true);
   };
 
-  const handleEditClick = (product: UIProduct) => {
-    setSelectedProduct(product);
-    setEditOpen(true);
+  const handleEditClick = async (product: UIProduct) => {
+    try {
+      const fullProduct = await productsService.getById(product.id);
+      setSelectedProduct(fullProduct);
+      setEditOpen(true);
+    } catch {
+      setSelectedProduct(product);
+      setEditOpen(true);
+    }
   };
 
   const handleDeleteClick = (product: UIProduct) => {
