@@ -452,7 +452,7 @@ export default function AdminCustomersPage() {
             </div>
           )}
           <DialogFooter className="mt-6 flex gap-3">
-            <Button variant="outline" onClick={() => setViewOpen(false)} className="border-slate-200">
+            <Button variant="outline" onClick={() => handleCloseView(false)} className="border-slate-200">
               Close
             </Button>
           </DialogFooter>
