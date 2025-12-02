@@ -77,21 +77,19 @@ export function MegaMenu({ isOpen, onClose, categories }: MegaMenuProps) {
                     <span className="text-xs font-medium text-center line-clamp-2">{category.name}</span>
                   </Link>
                 ))}
-                {/* Empty slots to push View All to the last position */}
-                {Array.from({ length: emptySlots }).map((_, idx) => (
-                  <div key={`empty-${idx}`} className="flex flex-col items-center gap-2 rounded-lg p-3" />
-                ))}
-                {/* View All button at last position */}
-                <Link
-                  href="/all-products"
-                  onClick={onClose}
-                  className="flex flex-col items-center justify-center gap-2 rounded-lg p-3 transition-colors hover:bg-accent"
-                >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-foreground text-background text-xl font-bold flex-shrink-0">
-                    +
-                  </div>
-                  <span className="text-xs font-medium text-center">View All</span>
-                </Link>
+                {/* View All button appears after categories if there are more */}
+                {hasMoreCategories && (
+                  <Link
+                    href="/all-products"
+                    onClick={onClose}
+                    className="flex flex-col items-center justify-center gap-2 rounded-lg p-3 transition-colors hover:bg-accent"
+                  >
+                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-foreground text-background text-xl font-bold flex-shrink-0">
+                      +
+                    </div>
+                    <span className="text-xs font-medium text-center">View All</span>
+                  </Link>
+                )}
               </>
             ) : (
               <p className="text-sm text-muted-foreground">Loading categories...</p>
