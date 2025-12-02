@@ -131,7 +131,7 @@ export function Navbar() {
               Categories
               <ChevronDown className={cn("h-4 w-4 transition-transform", isMegaMenuOpen && "rotate-180")} />
             </button>
-            {categories.slice(0, 4).map((category) => (
+            {categories.slice(0, 3).map((category) => (
               <Link
                 key={category.slug}
                 href={`/category/${category.slug}`}
@@ -143,6 +143,15 @@ export function Navbar() {
                 {category.name}
               </Link>
             ))}
+            <Link
+              href="/all-products"
+              className={cn(
+                "rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent",
+                pathname === "/all-products" && "bg-accent",
+              )}
+            >
+              All Products
+            </Link>
           </nav>
 
           {/* Search - Desktop */}
