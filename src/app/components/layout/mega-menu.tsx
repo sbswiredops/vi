@@ -3,28 +3,13 @@
 import { useEffect, useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRight } from "lucide-react"
 import { cn } from "@/app/lib/utils"
-import type { Category, Brand } from "@/app/types"
-
-const trendingData = [
-  { name: "iPhone 15 Pro Max", slug: "iphone-15-pro-max" },
-  { name: "Samsung Galaxy S24 Ultra", slug: "samsung-galaxy-s24-ultra" },
-  { name: "MacBook Pro M3", slug: "macbook-pro-m3" },
-  { name: "AirPods Pro 2", slug: "airpods-pro-2" },
-]
-
-const dealsData = [
-  { name: "Flash Sale - Up to 50% Off", slug: "flash-sale" },
-  { name: "Bundle Deals", slug: "bundle-deals" },
-  { name: "Clearance Sale", slug: "clearance" },
-]
+import type { Category } from "@/app/types"
 
 interface MegaMenuProps {
   isOpen: boolean
   onClose: () => void
   categories: Category[]
-  brands: Brand[]
 }
 
 export function MegaMenu({ isOpen, onClose, categories, brands }: MegaMenuProps) {
