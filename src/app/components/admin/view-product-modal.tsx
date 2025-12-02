@@ -296,138 +296,156 @@ export function ViewProductModal({
           {/* Attributes Tab */}
           <TabsContent value="attributes" className="space-y-4">
             {/* Regions */}
-            {product.regions && product.regions.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Regions</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    {product.regions.map((region: any, idx: number) => (
-                      <div
-                        key={idx}
-                        className="flex items-center justify-between border rounded p-3"
-                      >
-                        <div className="flex-1">
-                          <p className="font-medium">{region.name}</p>
-                          <p className="text-xs text-muted-foreground">
-                            Price: {formatPrice(region.price)} • Stock: {region.stock}
-                          </p>
+            {(() => {
+              const regions = parseJSON(product.regions, []);
+              return regions && regions.length > 0 ? (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Regions</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      {regions.map((region: any, idx: number) => (
+                        <div
+                          key={idx}
+                          className="flex items-center justify-between border rounded p-3"
+                        >
+                          <div className="flex-1">
+                            <p className="font-medium">{region.name}</p>
+                            <p className="text-xs text-muted-foreground">
+                              Price: {formatPrice(region.price || 0)} • Stock: {region.stock || 0}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : null;
+            })()}
 
             {/* Colors */}
-            {product.colors && product.colors.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Colors</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-4">
-                    {product.colors.map((color: any, idx: number) => (
-                      <div key={idx} className="flex flex-col items-center">
-                        <span
-                          className="inline-block w-10 h-10 rounded-full border-2 mb-1"
-                          style={{
-                            backgroundColor: color.code || "#000000",
-                            borderColor: "#bbb",
-                          }}
-                          title={color.name}
-                        />
-                        <span className="text-xs text-muted-foreground">
-                          {color.name}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+            {(() => {
+              const colors = parseJSON(product.colors, []);
+              return colors && colors.length > 0 ? (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Colors</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-4">
+                      {colors.map((color: any, idx: number) => (
+                        <div key={idx} className="flex flex-col items-center">
+                          <span
+                            className="inline-block w-10 h-10 rounded-full border-2 mb-1"
+                            style={{
+                              backgroundColor: color.code || "#000000",
+                              borderColor: "#bbb",
+                            }}
+                            title={color.name}
+                          />
+                          <span className="text-xs text-muted-foreground">
+                            {color.name}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : null;
+            })()}
 
             {/* Networks, Sizes, Plugs */}
             <div className="grid gap-4 sm:grid-cols-3">
-              {product.networks && product.networks.length > 0 && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Networks</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-2">
-                      {product.networks.map((network: string, idx: number) => (
-                        <Badge key={idx} variant="secondary">
-                          {network}
-                        </Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
+              {(() => {
+                const networks = parseJSON(product.networks, []);
+                return networks && networks.length > 0 ? (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Networks</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex flex-wrap gap-2">
+                        {networks.map((network: string, idx: number) => (
+                          <Badge key={idx} variant="secondary">
+                            {network}
+                          </Badge>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ) : null;
+              })()}
 
-              {product.sizes && product.sizes.length > 0 && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Sizes</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-2">
-                      {product.sizes.map((size: string, idx: number) => (
-                        <Badge key={idx} variant="secondary">
-                          {size}
-                        </Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
+              {(() => {
+                const sizes = parseJSON(product.sizes, []);
+                return sizes && sizes.length > 0 ? (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Sizes</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex flex-wrap gap-2">
+                        {sizes.map((size: string, idx: number) => (
+                          <Badge key={idx} variant="secondary">
+                            {size}
+                          </Badge>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ) : null;
+              })()}
 
-              {product.plugs && product.plugs.length > 0 && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Plugs</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-2">
-                      {product.plugs.map((plug: string, idx: number) => (
-                        <Badge key={idx} variant="secondary">
-                          {plug}
-                        </Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
+              {(() => {
+                const plugs = parseJSON(product.plugs, []);
+                return plugs && plugs.length > 0 ? (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Plugs</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex flex-wrap gap-2">
+                        {plugs.map((plug: string, idx: number) => (
+                          <Badge key={idx} variant="secondary">
+                            {plug}
+                          </Badge>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ) : null;
+              })()}
             </div>
 
             {/* Specifications */}
-            {product.specifications && product.specifications.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Specifications</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="rounded-lg border">
-                    <div className="grid grid-cols-2 bg-muted font-semibold p-3 rounded-t-lg gap-4">
-                      <div>Key</div>
-                      <div>Value</div>
-                    </div>
-                    {product.specifications.map((spec: any, idx: number) => (
-                      <div
-                        key={idx}
-                        className="grid grid-cols-2 gap-4 border-t p-3"
-                      >
-                        <div className="font-medium text-sm">{spec.key}</div>
-                        <div className="text-sm">{spec.value}</div>
+            {(() => {
+              const specifications = parseJSON(product.specifications, []);
+              return specifications && specifications.length > 0 ? (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Specifications</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="rounded-lg border">
+                      <div className="grid grid-cols-2 bg-muted font-semibold p-3 rounded-t-lg gap-4">
+                        <div>Key</div>
+                        <div>Value</div>
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+                      {specifications.map((spec: any, idx: number) => (
+                        <div
+                          key={idx}
+                          className="grid grid-cols-2 gap-4 border-t p-3"
+                        >
+                          <div className="font-medium text-sm">{spec.key}</div>
+                          <div className="text-sm">{spec.value}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : null;
+            })()}
           </TabsContent>
 
           {/* Inventory Tab */}
