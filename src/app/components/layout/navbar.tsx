@@ -357,7 +357,7 @@ export function Navbar() {
         </div>
 
         {/* Mega Menu */}
-        <MegaMenu isOpen={isMegaMenuOpen} onClose={() => setIsMegaMenuOpen(false)} />
+        <MegaMenu isOpen={isMegaMenuOpen} onClose={() => setIsMegaMenuOpen(false)} categories={categories} brands={brands} />
       </header>
 
       {/* Search Modal */}
