@@ -145,6 +145,46 @@ export function CompareContent() {
             </div>
           </div>
         ))}
+
+        {/* Empty Placeholder Cards */}
+        {[...Array(Math.min(3, 4 - items.length))].map((_, index) => (
+          <div key={`empty-${index}`} className="flex flex-col rounded-lg border border-border bg-muted/30">
+            {/* Search Bar */}
+            <div className="relative border-b border-border p-4">
+              <Search className="absolute left-6 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Search..."
+                disabled
+                className="w-full bg-transparent pl-8 pr-3 py-2 text-sm placeholder-muted-foreground outline-none cursor-not-allowed"
+              />
+            </div>
+
+            {/* Empty Product Area */}
+            <div className="flex flex-1 flex-col items-center justify-center border-b border-border p-8 text-center">
+              <div className="mb-3 h-32 w-32 rounded-lg bg-muted" />
+              <p className="text-xs text-muted-foreground">Add a product to compare</p>
+            </div>
+
+            {/* Empty Specs Area */}
+            <div className="space-y-3 p-4">
+              <div className="h-8 rounded bg-muted" />
+              <div className="h-8 rounded bg-muted" />
+              <div className="h-8 rounded bg-muted" />
+            </div>
+
+            {/* Disabled Button */}
+            <div className="border-t border-border p-4">
+              <Button
+                size="sm"
+                disabled
+                className="w-full"
+              >
+                Shop Now
+              </Button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   )
