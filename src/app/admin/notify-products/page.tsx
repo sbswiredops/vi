@@ -14,8 +14,9 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../../components/ui/dropdown-menu'
 import { toast } from 'sonner'
 import { productNotifyService, type ProductNotifyRequest } from '../../lib/api/services/notify'
+import { withProtectedRoute } from '../../lib/auth/protected-route'
 
-export default function NotifyProductsPage() {
+function NotifyProductsPage() {
   const [notifications, setNotifications] = useState<ProductNotifyRequest[]>([])
   const [filteredNotifications, setFilteredNotifications] = useState<ProductNotifyRequest[]>([])
   const [searchQuery, setSearchQuery] = useState('')
