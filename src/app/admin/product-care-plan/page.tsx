@@ -162,7 +162,7 @@ function MultiSelect({
   );
 }
 
-export default function ProductCarePlanPage() {
+function ProductCarePlanPage() {
   const [carePlans, setCarePlans] = useState<ProductCarePlan[]>([]);
   const [filteredPlans, setFilteredPlans] = useState<ProductCarePlan[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
