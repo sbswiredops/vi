@@ -65,7 +65,7 @@ export function CompareContent() {
                     <Link href={`/product/${product.slug}`}>
                       <div className="mx-auto mb-3 h-32 w-32 overflow-hidden rounded-lg bg-muted">
                         <Image
-                          src={product.images[0] || "/placeholder.svg?height=128&width=128"}
+                          src={Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : "/placeholder.svg?height=128&width=128"}
                           alt={product.name}
                           width={128}
                           height={128}
