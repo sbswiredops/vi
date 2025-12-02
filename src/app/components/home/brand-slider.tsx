@@ -68,16 +68,21 @@ export function BrandSlider({ brands }: BrandSliderProps) {
               key={brand.slug}
               href={`/brand/${brand.slug}`}
               aria-label={`Shop ${brand.name}`}
-              className="group relative flex h-36 w-44 shrink-0 items-center justify-center rounded-xl border border-border bg-card p-3 transition-transform duration-200 hover:scale-105 hover:shadow-lg"
+              className="group relative flex shrink-0 items-center justify-center rounded-xl border border-border bg-card p-3 transition-transform duration-200 hover:scale-105 hover:shadow-lg"
+              style={{ width: "640px", height: "200px" }}
             >
               <div className="flex h-full w-full items-center justify-center">
-                <Image
-                  src={brand.logo || "/placeholder.svg"}
-                  alt={brand.name}
-                  width={140}
-                  height={80}
-                  className="max-h-24 max-w-full object-contain opacity-95 transition-opacity duration-200 group-hover:opacity-100"
-                />
+                <div
+                  className="w-full h-full"
+                  style={{ aspectRatio: "1920/600", position: "relative" }}
+                >
+                  <Image
+                    src={brand.logo || "/placeholder.svg"}
+                    alt={brand.name}
+                    fill
+                    className="object-contain opacity-95 transition-opacity duration-200 group-hover:opacity-100 rounded"
+                  />
+                </div>
               </div>
             </Link>
           ))}
@@ -88,16 +93,21 @@ export function BrandSlider({ brands }: BrandSliderProps) {
               key={`${brand.slug}-dup`}
               href={`/brand/${brand.slug}`}
               aria-label={`Shop ${brand.name}`}
-              className="group relative flex h-36 w-44 shrink-0 items-center justify-center rounded-xl border border-border bg-card p-3 transition-transform duration-200 hover:scale-105 hover:shadow-lg"
+              className="group relative flex shrink-0 items-center justify-center rounded-xl border border-border bg-card p-3 transition-transform duration-200 hover:scale-105 hover:shadow-lg"
+              style={{ width: "640px", height: "200px" }}
             >
               <div className="flex h-full w-full items-center justify-center">
-                <Image
-                  src={brand.logo || "/placeholder.svg"}
-                  alt={brand.name}
-                  width={140}
-                  height={80}
-                  className="max-h-24 max-w-full object-contain opacity-95 transition-opacity duration-200 group-hover:opacity-100"
-                />
+                <div
+                  className="w-full h-full"
+                  style={{ aspectRatio: "1920/600", position: "relative" }}
+                >
+                  <Image
+                    src={brand.logo || "/placeholder.svg"}
+                    alt={brand.name}
+                    fill
+                    className="object-contain opacity-95 transition-opacity duration-200 group-hover:opacity-100 rounded"
+                  />
+                </div>
               </div>
             </Link>
           ))}
