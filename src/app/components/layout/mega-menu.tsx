@@ -27,7 +27,7 @@ interface MegaMenuProps {
   brands: Brand[]
 }
 
-export function MegaMenu({ isOpen, onClose }: MegaMenuProps) {
+export function MegaMenu({ isOpen, onClose, categories, brands }: MegaMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
