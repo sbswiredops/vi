@@ -56,118 +56,32 @@ export function MegaMenu({ isOpen, onClose, categories, brands }: MegaMenuProps)
       )}
     >
       <div className="mx-auto max-w-7xl px-4 py-8">
-        <div className="grid gap-8 lg:grid-cols-4">
-          {/* Categories */}
-          <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Categories</h3>
-            <div className="space-y-1">
-              {categories.length > 0 ? (
-                categories.map((category) => (
-                  <Link
-                    key={category.slug}
-                    href={`/category/${category.slug}`}
-                    onClick={onClose}
-                    className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-accent"
-                  >
-                    <div className="relative h-10 w-10 overflow-hidden rounded-lg bg-muted">
-                      <Image
-                        src={category.image || "/placeholder.svg"}
-                        alt={category.name}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <span className="text-sm font-medium">{category.name}</span>
-                  </Link>
-                ))
-              ) : (
-                <p className="text-sm text-muted-foreground">Loading categories...</p>
-              )}
-            </div>
-          </div>
-
-          {/* Brands */}
-          <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Top Brands</h3>
-            <div className="grid grid-cols-2 gap-2">
-              {brands.length > 0 ? (
-                brands.slice(0, 6).map((brand) => (
-                  <Link
-                    key={brand.slug}
-                    href={`/brand/${brand.slug}`}
-                    onClick={onClose}
-                    className="flex items-center gap-2 rounded-lg p-2 transition-colors hover:bg-accent"
-                  >
-                    <div className="relative h-8 w-8 overflow-hidden rounded bg-muted">
-                      <Image
-                        src={brand.logo || "/placeholder.svg"}
-                        alt={brand.name}
-                        fill
-                        className="object-contain p-1"
-                      />
-                    </div>
-                    <span className="text-sm font-medium">{brand.name}</span>
-                  </Link>
-                ))
-              ) : (
-                <p className="text-sm text-muted-foreground">Loading brands...</p>
-              )}
-            </div>
-            <Link
-              href="/all-products"
-              onClick={onClose}
-              className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground"
-            >
-              View All Brands
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-
-          {/* Trending */}
-          <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Trending Now</h3>
-            <div className="space-y-1">
-              {trendingData.map((item) => (
+        <div>
+          {/* Categories Only */}
+          <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Categories</h3>
+          <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {categories.length > 0 ? (
+              categories.map((category) => (
                 <Link
-                  key={item.slug}
-                  href={`/product/${item.slug}`}
+                  key={category.slug}
+                  href={`/category/${category.slug}`}
                   onClick={onClose}
-                  className="block rounded-lg p-2 text-sm font-medium transition-colors hover:bg-accent"
+                  className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-accent"
                 >
-                  {item.name}
+                  <div className="relative h-10 w-10 overflow-hidden rounded-lg bg-muted">
+                    <Image
+                      src={category.banner || category.image || "/placeholder.svg"}
+                      alt={category.name}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <span className="text-sm font-medium">{category.name}</span>
                 </Link>
-              ))}
-            </div>
-          </div>
-
-          {/* Hot Deals */}
-          <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-[oklch(0.55_0.2_25)]">Hot Deals</h3>
-            <div className="space-y-2">
-              {dealsData.map((deal) => (
-                <Link
-                  key={deal.slug}
-                  href={`/deals/${deal.slug}`}
-                  onClick={onClose}
-                  className="block rounded-lg border border-[oklch(0.55_0.2_25)]/20 bg-[oklch(0.55_0.2_25)]/5 p-3 text-sm font-medium transition-colors hover:bg-[oklch(0.55_0.2_25)]/10"
-                >
-                  {deal.name}
-                </Link>
-              ))}
-            </div>
-            <div className="mt-6 rounded-xl bg-foreground p-4 text-background">
-              <p className="text-xs uppercase tracking-wider">Limited Time</p>
-              <p className="mt-1 text-lg font-bold">Flash Sale</p>
-              <p className="text-sm opacity-80">Up to 50% off selected items</p>
-              <Link
-                href="/deals/flash-sale"
-                onClick={onClose}
-                className="mt-3 inline-flex items-center gap-1 text-sm font-medium"
-              >
-                Shop Now
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
+              ))
+            ) : (
+              <p className="text-sm text-muted-foreground">Loading categories...</p>
+            )}
           </div>
         </div>
       </div>
