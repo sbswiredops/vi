@@ -153,7 +153,7 @@ export function AllProductsFilters({
         </button>
         {expandedSections.categories && (
           <div className="mt-2 space-y-2">
-            {categories.length > 0 ? (
+            {categories && categories.length > 0 ? (
               categories.map((category) => (
                 <label
                   key={category.id}
@@ -173,7 +173,7 @@ export function AllProductsFilters({
               ))
             ) : (
               <p className="text-sm text-muted-foreground">
-                Loading categories...
+                No categories available
               </p>
             )}
           </div>
