@@ -582,7 +582,7 @@ export default function AdminCustomersPage() {
             </div>
 
             <SheetFooter className="border-t border-slate-200 bg-slate-50 px-6 py-4">
-              <Button variant="outline" onClick={() => setEmailOpen(false)} className="border-slate-200">
+              <Button variant="outline" onClick={() => handleCloseEmail(false)} className="border-slate-200">
                 Cancel
               </Button>
               <Button onClick={handleSendEmail} className="gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
