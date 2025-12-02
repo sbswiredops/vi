@@ -546,3 +546,9 @@ function PrivacyPolicyPage() {
     </div>
   );
 }
+
+export default withProtectedRoute(PrivacyPolicyPage, {
+  requiredRoles: ["admin"],
+  fallbackTo: "/login",
+  showLoader: true,
+});
