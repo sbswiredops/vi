@@ -90,21 +90,21 @@ div[data-radix-dialog-overlay] {
 }
 
 /* Form field transitions */
-.space-y-2.5 input,
-.space-y-2.5 textarea,
-.space-y-2.5 select {
+div[class*="space-y"] input,
+div[class*="space-y"] textarea,
+div[class*="space-y"] select {
   transition: all 0.2s ease-in-out;
 }
 
-.space-y-2.5 input:hover,
-.space-y-2.5 textarea:hover,
-.space-y-2.5 select:hover {
+div[class*="space-y"] input:hover,
+div[class*="space-y"] textarea:hover,
+div[class*="space-y"] select:hover {
   border-color: rgb(203, 213, 225);
 }
 
-.dark .space-y-2.5 input:hover,
-.dark .space-y-2.5 textarea:hover,
-.dark .space-y-2.5 select:hover {
+.dark div[class*="space-y"] input:hover,
+.dark div[class*="space-y"] textarea:hover,
+.dark div[class*="space-y"] select:hover {
   border-color: rgb(71, 85, 105);
 }
 
