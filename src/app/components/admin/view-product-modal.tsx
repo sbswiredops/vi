@@ -590,15 +590,6 @@ export function ViewProductModal({
                   </div>
                 )}
 
-                {product.highlights && (
-                  <div>
-                    <label className="text-xs font-semibold text-muted-foreground uppercase">
-                      Highlights
-                    </label>
-                    <p className="mt-1 text-sm">{product.highlights}</p>
-                  </div>
-                )}
-
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground uppercase">
                     Created
