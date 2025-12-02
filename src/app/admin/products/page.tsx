@@ -131,9 +131,15 @@ function AdminProductsPage() {
     fetchProducts();
   }, [selectedCategory, categories]);
 
-  const handleViewClick = (product: UIProduct) => {
-    setSelectedProduct(product);
-    setViewOpen(true);
+  const handleViewClick = async (product: UIProduct) => {
+    try {
+      const fullProduct = await productsService.getById(product.id);
+      setSelectedProduct(fullProduct);
+      setViewOpen(true);
+    } catch {
+      setSelectedProduct(product);
+      setViewOpen(true);
+    }
   };
 
   const handleEditClick = (product: UIProduct) => {
