@@ -40,6 +40,7 @@ export interface Category {
   children?: Category[]
   productCount?: number
   banner?: string
+  priority?: number | string
   createdAt: string
   updatedAt: string
 }
