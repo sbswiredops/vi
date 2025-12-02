@@ -58,7 +58,10 @@ export function HeroBanner() {
 
   if (banners.length === 0) {
     return (
-      <div className="relative overflow-hidden rounded-2xl bg-muted aspect-16/5 w-full flex items-center justify-center">
+      <div
+        className="relative overflow-hidden rounded-2xl bg-muted w-full flex items-center justify-center"
+        style={{ aspectRatio: "1920/600" }}
+      >
         <span className="text-muted-foreground">No banners available</span>
       </div>
     );
@@ -71,7 +74,7 @@ export function HeroBanner() {
       onMouseLeave={() => setIsAutoPlaying(true)}
     >
       {/* Slides */}
-      <div className="relative aspect-16/5 w-full">
+      <div className="relative w-full" style={{ aspectRatio: "1920/600" }}>
         {banners.map((banner, index) => (
           <div
             key={banner.id}
