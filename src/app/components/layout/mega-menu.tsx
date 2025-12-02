@@ -38,6 +38,13 @@ export function MegaMenu({ isOpen, onClose, categories }: MegaMenuProps) {
     return priorityA - priorityB
   })
 
+  // Calculate layout: max 3 rows, 10 columns, "View All" always at last position (row 3, col 10)
+  const maxItems = 29 // 3 rows * 10 columns - 1 (for View All button)
+  const displayCategories = sortedCategories.slice(0, maxItems)
+  const totalPositions = 30 // 3 rows * 10 columns
+  const currentItems = displayCategories.length + 1 // +1 for View All button
+  const emptySlots = totalPositions - currentItems
+
   return (
     <div
       ref={menuRef}
@@ -52,9 +59,9 @@ export function MegaMenu({ isOpen, onClose, categories }: MegaMenuProps) {
           {/* Categories Only */}
           <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Categories</h3>
           <div className="grid gap-3 grid-cols-10">
-            {sortedCategories.length > 0 ? (
+            {displayCategories.length > 0 ? (
               <>
-                {sortedCategories.map((category) => (
+                {displayCategories.map((category) => (
                   <Link
                     key={category.slug}
                     href={`/category/${category.slug}`}
@@ -72,6 +79,11 @@ export function MegaMenu({ isOpen, onClose, categories }: MegaMenuProps) {
                     <span className="text-xs font-medium text-center line-clamp-2">{category.name}</span>
                   </Link>
                 ))}
+                {/* Empty slots to push View All to the last position */}
+                {Array.from({ length: emptySlots }).map((_, idx) => (
+                  <div key={`empty-${idx}`} className="flex flex-col items-center gap-2 rounded-lg p-3" />
+                ))}
+                {/* View All button at last position */}
                 <Link
                   href="/all-products"
                   onClick={onClose}
