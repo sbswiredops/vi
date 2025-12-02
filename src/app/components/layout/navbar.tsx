@@ -22,20 +22,18 @@ import { SearchModal } from "./search-modal"
 import { useAuthStore } from "@/app/store/auth-store"
 import { cn } from "@/app/lib/utils"
 import Image from "next/image"
-
-const categories = [
-  { name: "Smartphones", slug: "smartphones" },
-  { name: "Laptops", slug: "laptops" },
-  { name: "Tablets", slug: "tablets" },
-  { name: "Accessories", slug: "accessories" },
-  { name: "Audio", slug: "audio" },
-  { name: "Wearables", slug: "wearables" },
-]
+import { categoriesService } from "@/app/lib/api/services/categories"
+import { brandsService } from "@/app/lib/api/services/brands"
+import type { Category, Brand } from "@/app/types"
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [categories, setCategories] = useState<Category[]>([])
+  const [brands, setBrands] = useState<Brand[]>([])
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true)
+  const [isLoadingBrands, setIsLoadingBrands] = useState(true)
   const pathname = usePathname()
   const router = useRouter()
 
