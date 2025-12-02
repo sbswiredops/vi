@@ -33,6 +33,7 @@ import {
   AlertDialogTitle,
 } from "../../components/ui/alert-dialog";
 import categoriesService from "../../lib/api/services/categories";
+import { withProtectedRoute } from "../../lib/auth/protected-route";
 
 // ===== TYPES =====
 interface Subcategory {
@@ -61,7 +62,7 @@ type AddFormData = {
   banner: string | File;
 };
 
-export default function AdminCategoriesPage() {
+function AdminCategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [viewOpen, setViewOpen] = useState(false);
@@ -470,3 +471,9 @@ export default function AdminCategoriesPage() {
     </div>
   );
 }
+
+export default withProtectedRoute(AdminCategoriesPage, {
+  requiredRoles: ["admin"],
+  fallbackTo: "/login",
+  showLoader: true,
+});
