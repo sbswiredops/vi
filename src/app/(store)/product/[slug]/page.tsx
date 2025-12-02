@@ -57,6 +57,7 @@ export default async function ProductPage({params}: ProductPageProps) {
       console.log('Fetched category by ID:', category);
     } catch (e) {
       console.error('Category fetch error:', e);
+      category = undefined;
     }
   }
 
