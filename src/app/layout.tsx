@@ -6,6 +6,7 @@ import { generateOrganizationSchema } from "./lib/seo"
 import "./globals.css"
 import { JsonLd } from "./components/seo/json-ld"
 import { StoreProvider } from "./components/providers/store-provider"
+import { AuthInit } from "./components/providers/auth-init"
 
 const inter = Inter({ subsets: ["latin"] })
 
