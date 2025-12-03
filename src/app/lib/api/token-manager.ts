@@ -1,4 +1,5 @@
 import { STORAGE_KEYS } from "./config"
+import AuthService from "./services/auth.service"
 
 export class TokenManager {
   /**
@@ -144,5 +145,66 @@ export class TokenManager {
   static shouldRefreshToken(token?: string): boolean {
     const timeUntilExpiration = this.getTimeUntilExpiration(token)
     return timeUntilExpiration > 0 && timeUntilExpiration < 300 // 5 minutes
+  }
+
+  /**
+   * Validate token using backend endpoint (POST /auth/decode/{token})
+   * Returns decoded token payload if valid, null if invalid
+   */
+  static async validateTokenWithBackend(token: string): Promise<Record<string, unknown> | null> {
+    try {
+      const authService = new AuthService()
+      const decoded = await authService.decodeToken(token)
+      return decoded || null
+    } catch (error) {
+      console.error("Token validation failed:", error)
+      return null
+    }
+  }
+
+  /**
+   * Check if token is expired using backend validation
+   * Falls back to local expiry check if backend validation fails
+   */
+  static async isTokenExpiredWithBackend(token?: string): Promise<boolean> {
+    try {
+      const jwtToken = token || this.getToken()
+      if (!jwtToken) return true
+
+      const decoded = await this.validateTokenWithBackend(jwtToken)
+      if (!decoded || !decoded.exp) return true
+
+      const expirationTime = (decoded.exp as number) * 1000
+      return Date.now() >= expirationTime
+    } catch (error) {
+      // Fallback to local expiry check
+      return this.isTokenExpired(token)
+    }
+  }
+
+  /**
+   * Get user info from decoded token (via backend)
+   */
+  static async getUserInfoFromToken(token?: string): Promise<{
+    id: string | null
+    email: string | null
+    role: string | null
+  }> {
+    try {
+      const jwtToken = token || this.getToken()
+      if (!jwtToken) return { id: null, email: null, role: null }
+
+      const decoded = await this.validateTokenWithBackend(jwtToken)
+      if (!decoded) return { id: null, email: null, role: null }
+
+      return {
+        id: (decoded.sub || decoded.userId || decoded.id) as string | null,
+        email: (decoded.email || null) as string | null,
+        role: (decoded.role || null) as string | null,
+      }
+    } catch (error) {
+      console.error("Failed to get user info from token:", error)
+      return { id: null, email: null, role: null }
+    }
   }
 }

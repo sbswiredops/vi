@@ -73,7 +73,66 @@ function getTokenFromRequest(request: NextRequest): string | null {
   return token || null
 }
 
-export function middleware(request: NextRequest) {
+/**
+ * Decode JWT token locally (without verification)
+ * Used as fallback if backend endpoint is unavailable
+ */
+function decodeTokenLocally(token: string): Record<string, unknown> | null {
+  try {
+    const parts = token.split(".")
+    if (parts.length !== 3) return null
+
+    const payload = JSON.parse(Buffer.from(parts[1], "base64").toString())
+    return payload
+  } catch (error) {
+    return null
+  }
+}
+
+/**
+ * Validate token using backend endpoint (POST /auth/decode/{token})
+ * Falls back to local decoding if backend is unavailable
+ */
+async function validateTokenWithBackend(token: string): Promise<Record<string, unknown> | null> {
+  try {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/api"
+    const response = await fetch(`${apiBaseUrl}/auth/decode/${token}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    if (response.ok) {
+      return await response.json()
+    }
+
+    // Fallback to local decoding if backend validation fails
+    return decodeTokenLocally(token)
+  } catch (error) {
+    // If backend is unavailable, fall back to local decoding
+    console.warn("Backend token validation failed, using local decoding:", error)
+    return decodeTokenLocally(token)
+  }
+}
+
+/**
+ * Check if token is expired
+ */
+async function isTokenExpired(token: string): Promise<boolean> {
+  try {
+    const payload = await validateTokenWithBackend(token)
+    if (!payload || !payload.exp) return true
+
+    const expirationTime = (payload.exp as number) * 1000
+    return Date.now() >= expirationTime
+  } catch (error) {
+    return true
+  }
+}
+
+export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   const token = getTokenFromRequest(request)
 
@@ -86,6 +145,16 @@ export function middleware(request: NextRequest) {
   const isUserProtected = isUserProtectedRoute(pathname)
   const isAuth = isAuthRoute(pathname)
   const isPublic = isPublicRoute(pathname)
+
+  // If token exists, validate it (check expiry via backend)
+  if (token && await isTokenExpired(token)) {
+    // Token is expired, clear it and redirect to login
+    const response = NextResponse.redirect(new URL("/login", request.url))
+    response.cookies.delete("access_token")
+    response.cookies.delete("auth_token")
+    response.cookies.delete("refresh_token")
+    return response
+  }
 
   // If route is protected (either admin or user) and user is not authenticated
   if ((isAdmin || isUserProtected) && !token) {

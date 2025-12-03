@@ -22,9 +22,9 @@ export const API_ENDPOINTS = {
   AUTH_SOCIAL_LOGIN: '/auth/social-login',
   AUTH_REFRESH: '/auth/refresh',
   AUTH_LOGOUT: '/auth/logout',
+  AUTH_DECODE: '/auth/decode/{token}',
 
   // Users
-  USER_ME: '/users/me',
   USERS_CREATE: '/users',
   USERS_GET_ALL: '/users',
   USERS_GET_LIST: '/users/all',

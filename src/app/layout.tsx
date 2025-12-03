@@ -6,6 +6,7 @@ import { generateOrganizationSchema } from "./lib/seo"
 import "./globals.css"
 import { JsonLd } from "./components/seo/json-ld"
 import { StoreProvider } from "./components/providers/store-provider"
+import { AuthInit } from "./components/providers/auth-init"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -101,7 +102,10 @@ export default function RootLayout({
         <JsonLd data={generateOrganizationSchema()} />
       </head>
       <body className="font-sans antialiased" suppressHydrationWarning>
-        <StoreProvider>{children}</StoreProvider>
+        <StoreProvider>
+          <AuthInit />
+          {children}
+        </StoreProvider>
         <Analytics />
       </body>
     </html>

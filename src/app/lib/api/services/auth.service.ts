@@ -102,11 +102,16 @@ export class AuthService {
   }
 
   /**
-   * Get current user info
+   * Get current user info from /users/me endpoint
    */
    async getCurrentUser(): Promise<User> {
-    const response = await apiClient.get<ApiResponse<User>>(API_ENDPOINTS.USERS_ME)
-    return response.data.data!
+    try {
+      const response = await apiClient.get<User>(API_ENDPOINTS.USERS_ME)
+      return response.data
+    } catch (error) {
+      console.error("Failed to fetch current user:", error)
+      throw error
+    }
   }
 
   /**
@@ -144,6 +149,21 @@ export class AuthService {
    isManager(): boolean {
     const role = this.getUserRole()
     return role === "manager" || role === "admin"
+  }
+
+  /**
+   * Decode token using backend endpoint
+   * POST /auth/decode/{token}
+   */
+  async decodeToken(token: string): Promise<Record<string, unknown>> {
+    try {
+      const endpoint = API_ENDPOINTS.AUTH_DECODE.replace("{token}", token)
+      const response = await apiClient.post<Record<string, unknown>>(endpoint)
+      return response.data
+    } catch (error) {
+      console.error("Failed to decode token:", error)
+      throw error
+    }
   }
 }
 
