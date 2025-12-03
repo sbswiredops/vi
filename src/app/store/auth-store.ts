@@ -44,7 +44,13 @@ export const useAuthStore = create<AuthStore>()(
         try {
           const authService = new AuthService()
           const userData = await authService.getCurrentUser()
-          set({ user: userData, isAuthenticated: true, isInitialized: true })
+          // Map role to only "admin" or "user"
+          const mappedUser = {
+            ...userData,
+            role: userData.role === "admin" || userData.role === "user" ? userData.role : "user",
+            addresses: userData.addresses ?? [],
+          }
+          set({ user: mappedUser, isAuthenticated: true, isInitialized: true })
         } catch (error) {
           console.error("Failed to hydrate user:", error)
           set({ user: null, isAuthenticated: false, isInitialized: true })
