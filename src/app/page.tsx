@@ -12,6 +12,8 @@ import { productsService } from "./lib/api/services/products";
 import type { Product } from "./types";
 import type { Homecategory } from "./lib/api/services/homecategories";
 
+export const dynamic = 'force-dynamic';
+
 export default async function Page() {
   // Fetch brands for the slider
   const brands = await brandsService.findAll();
