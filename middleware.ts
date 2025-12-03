@@ -118,6 +118,16 @@ export function middleware(request: NextRequest) {
   const isAuth = isAuthRoute(pathname)
   const isPublic = isPublicRoute(pathname)
 
+  // If token exists, validate it (check expiry)
+  if (token && isTokenExpired(token)) {
+    // Token is expired, clear it and redirect to login
+    const response = NextResponse.redirect(new URL("/login", request.url))
+    response.cookies.delete("access_token")
+    response.cookies.delete("auth_token")
+    response.cookies.delete("refresh_token")
+    return response
+  }
+
   // If route is protected (either admin or user) and user is not authenticated
   if ((isAdmin || isUserProtected) && !token) {
     // Redirect to login with return URL
