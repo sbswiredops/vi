@@ -31,6 +31,7 @@ export const useAuthStore = create<AuthStore>()(
         set({ user, token, isAuthenticated: true })
       },
       logout: () => {
+        TokenManager.clearTokens()
         set({ user: null, token: null, isAuthenticated: false })
       },
       updateUser: (updates) => {
