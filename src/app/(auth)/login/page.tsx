@@ -67,6 +67,7 @@ export default function LoginPage() {
           res.user.role === "management"
             ? "admin"
             : (res.user.role as "admin" | "user"),
+        addresses: res.user.addresses ?? [],
       };
       const token = res.token ?? res.access_token;
       if (!token) throw new Error("No token received from API");
@@ -138,6 +139,7 @@ export default function LoginPage() {
       role: isAdmin ? "admin" : "user",
       addresses: [],
       createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
     // Update auth store with user data
