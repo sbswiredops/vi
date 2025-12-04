@@ -64,8 +64,11 @@ export const API_ENDPOINTS = {
   BRANDS_UPDATE: '/brands/{id}',
   BRANDS_DELETE: '/brands/{id}',
 
+
+
+
   // Products
-  PRODUCTS_CREATE: '/products',
+  PRODUCTS_CREATE: '/products-new',
   PRODUCTS_GET: '/products',
   PRODUCTS_GET_ONE: '/products/{id}',
   PRODUCTS_FEATURED: '/products/featured',
