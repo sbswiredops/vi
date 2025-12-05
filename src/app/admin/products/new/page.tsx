@@ -1142,60 +1142,23 @@ function NewProductPage() {
         <p className="mt-2 text-gray-600">Create a new product listing</p>
       </div>
 
-      <div className="mb-6 grid grid-cols-3 gap-4">
-        <button
-          onClick={() => setProductType('basic')}
-          className={`rounded-lg border-2 p-4 text-left transition-colors ${
+      <Tabs value={productType} onValueChange={(value) => setProductType(value as ProductType)} className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="basic">Basic Product</TabsTrigger>
+          <TabsTrigger value="network">Network Product</TabsTrigger>
+          <TabsTrigger value="region">Region Product</TabsTrigger>
+        </TabsList>
+
+        <form
+          onSubmit={
             productType === 'basic'
-              ? 'border-blue-600 bg-blue-50'
-              : 'border-gray-200 bg-white hover:border-gray-300'
-          }`}
+              ? handleBasicProductSubmit
+              : productType === 'network'
+                ? handleNetworkProductSubmit
+                : handleRegionProductSubmit
+          }
+          className="space-y-6 pt-6"
         >
-          <h3 className={`font-semibold ${productType === 'basic' ? 'text-blue-600' : 'text-gray-900'}`}>
-            Basic Product
-          </h3>
-          <p className="mt-1 text-sm text-gray-600">Simple product with basic info only</p>
-        </button>
-
-        <button
-          onClick={() => setProductType('network')}
-          className={`rounded-lg border-2 p-4 text-left transition-colors ${
-            productType === 'network'
-              ? 'border-blue-600 bg-blue-50'
-              : 'border-gray-200 bg-white hover:border-gray-300'
-          }`}
-        >
-          <h3 className={`font-semibold ${productType === 'network' ? 'text-blue-600' : 'text-gray-900'}`}>
-            Network Product
-          </h3>
-          <p className="mt-1 text-sm text-gray-600">Product with network variants & pricing</p>
-        </button>
-
-        <button
-          onClick={() => setProductType('region')}
-          className={`rounded-lg border-2 p-4 text-left transition-colors ${
-            productType === 'region'
-              ? 'border-blue-600 bg-blue-50'
-              : 'border-gray-200 bg-white hover:border-gray-300'
-          }`}
-        >
-          <h3 className={`font-semibold ${productType === 'region' ? 'text-blue-600' : 'text-gray-900'}`}>
-            Region Product
-          </h3>
-          <p className="mt-1 text-sm text-gray-600">Product with regional variants & pricing</p>
-        </button>
-      </div>
-
-      <form
-        onSubmit={
-          productType === 'basic'
-            ? handleBasicProductSubmit
-            : productType === 'network'
-              ? handleNetworkProductSubmit
-              : handleRegionProductSubmit
-        }
-        className="space-y-6"
-      >
         <Card>
           <CardHeader>
             <CardTitle>Basic Information</CardTitle>
@@ -1608,7 +1571,7 @@ function NewProductPage() {
           </CardContent>
         </Card>
 
-        {productType === 'basic' && (
+        <TabsContent value="basic" className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>Colors</CardTitle>
@@ -1733,9 +1696,9 @@ function NewProductPage() {
               </button>
             </CardContent>
           </Card>
-        )}
+        </TabsContent>
 
-        {productType === 'network' && (
+        <TabsContent value="network" className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>Networks & Colors</CardTitle>
@@ -1975,9 +1938,9 @@ function NewProductPage() {
               </button>
             </CardContent>
           </Card>
-        )}
+        </TabsContent>
 
-        {productType === 'region' && (
+        <TabsContent value="region" className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>Regions</CardTitle>
@@ -2307,7 +2270,7 @@ function NewProductPage() {
               </button>
             </CardContent>
           </Card>
-        )}
+        </TabsContent>
 
         <div className="flex gap-4">
           <Button
@@ -2327,7 +2290,8 @@ function NewProductPage() {
             </Button>
           </Link>
         </div>
-      </form>
+        </form>
+      </Tabs>
     </div>
   );
 }
