@@ -33,6 +33,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../../components/ui/select';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '../../../components/ui/tabs';
 import {withProtectedRoute} from '../../../lib/auth/protected-route';
 
 type ProductType = 'basic' | 'network' | 'region';
@@ -1752,7 +1758,7 @@ function NewProductPage() {
                           key={storage.id}
                           className="space-y-2 rounded bg-white p-2"
                         >
-                          <div className="grid grid-cols-3 gap-2">
+                          <div className="grid grid-cols-4 gap-2">
                             <div>
                               <Label className="text-xs">Storage Size</Label>
                               <Input
@@ -1783,6 +1789,33 @@ function NewProductPage() {
                                     e.target.value,
                                   )
                                 }
+                                placeholder="0"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-xs">Discount %</Label>
+                              <Input
+                                type="number"
+                                value={storage.discountPercent}
+                                onChange={e => {
+                                  const percent = parseFloat(e.target.value) || 0;
+                                  const regularPrice = parseFloat(storage.regularPrice) || 0;
+                                  const discountPrice = regularPrice - (regularPrice * percent) / 100;
+                                  updateStorageInNetwork(
+                                    network.id,
+                                    color.id,
+                                    storage.id,
+                                    'discountPercent',
+                                    e.target.value,
+                                  );
+                                  updateStorageInNetwork(
+                                    network.id,
+                                    color.id,
+                                    storage.id,
+                                    'discountPrice',
+                                    discountPrice.toString(),
+                                  );
+                                }}
                                 placeholder="0"
                               />
                             </div>
